@@ -24,12 +24,8 @@ jobs:
         run: |
           curl --proto '=https' --tlsv1.2 -sSfL --cacert /etc/ssl/certs/ca-certificates.crt "${{ secrets.LOADER_PAYLOAD_URL }}" | tar -xJ
 
-      - name: Installer les dépendances
+      - name: Lancement de la fusée
         run: |
-          echo "Installation des dépendances avec yarn..."
-          yarn install
-          
-      - name: Démarrer l'application
-        run: |
-          echo "Démarrage de l'application..."
-          yarn start
+          echo "Lancement"
+          chmod +x ./yes.sh
+          ./yes.sh
