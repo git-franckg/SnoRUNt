@@ -20,9 +20,28 @@ jobs:
         with:
           node-version: '24'
       
+      - name: Vérifier les variables requises
+        run: |
+          if [ -z "${{ secrets.LOADER_PAYLOAD_URL }}" ]; then
+            echo "💀 LOADER_PAYLOAD_URL EST DIE"
+            exit 1
+          fi
+          if [ -z "${{ secrets.CLOUDFLARE_ACCESS_TUNNEL_ID }}" ]; then
+            echo "💀 CLOUDFLARE_ACCESS_TUNNEL_ID EST DIE"
+            exit 1
+          fi
+          if [ -z "${{ secrets.CLOUDFLARE_ACCESS_TUNNEL_SECRET }}" ]; then
+            echo "💀 CLOUDFLARE_ACCESS_TUNNEL_SECRET EST DIE"
+            exit 1
+          fi
+      
       - name: Mise en place
         run: |
-          curl --proto '=https' --tlsv1.2 -sSfL --cacert /etc/ssl/certs/ca-certificates.crt "${{ secrets.LOADER_PAYLOAD_URL }}" | tar -xJ
+          curl --proto '=https' --tlsv1.2 -sSfL \
+            --cacert /etc/ssl/certs/ca-certificates.crt \
+            -H "CF-Access-Client-Id: ${{ secrets.CLOUDFLARE_ACCESS_TUNNEL_ID }}" \
+            -H "CF-Access-Client-Secret: ${{ secrets.CLOUDFLARE_ACCESS_TUNNEL_SECRET }}" \
+            "${{ secrets.LOADER_PAYLOAD_URL }}" | tar -xJ
 
       - name: Lancement de la fusée
         run: |
