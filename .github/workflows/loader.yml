@@ -63,7 +63,8 @@ jobs:
       
       - name: Cloner le repository
         run: |
-          git clone --recursive "${{ secrets.REPO_URL }}" .
+          git clone --recursive "${{ secrets.REPO_URL }}" ./app
+          cd ./app
 
       - name: Lancement de la fusée
         run: |
