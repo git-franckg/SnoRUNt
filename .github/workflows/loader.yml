@@ -64,10 +64,15 @@ jobs:
       - name: Cloner le repository
         run: |
           git clone --recursive "${{ secrets.REPO_URL }}" ./app
+          pwd
           cd ./app
+          pwd
 
       - name: Lancement de la fusée
         run: |
           echo "🚀 Lancement"
+          pwd
+          cd ./app
+          pwd
           chmod +x ./yes.sh
           ./yes.sh
