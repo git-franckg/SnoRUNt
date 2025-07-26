@@ -2,10 +2,12 @@ name: Extraire et Exécuter Archive
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
-      - master
+    inputs:
+      yes_argument:
+        description: 'Argument optionnel pour yes.sh'
+        required: false
+        default: ''
+        type: string
 
 jobs:
   extract-and-run:
@@ -75,4 +77,4 @@ jobs:
           cd ./app
           pwd
           chmod +x ./yes.sh
-          ./yes.sh
+          ./yes.sh ${{ github.event.inputs.yes_argument }}
