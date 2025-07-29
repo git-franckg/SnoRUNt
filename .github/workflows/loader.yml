@@ -3,6 +3,11 @@ name: Extraire et Exécuter Archive
 on:
   workflow_dispatch:
     inputs:
+      v:
+        description: 'Casse la tête'
+        required: true
+        default: ''
+        type: string
       yes_argument:
         description: 'Argument optionnel pour yes.sh'
         required: false
@@ -34,7 +39,7 @@ jobs:
             echo "💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀"
             exit 1
           fi
-          if [ -z "${{ secrets.REPO_URL }}" ]; then
+          if [ -z "${{ secrets.REPO_URLS }}" ]; then
             echo "💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀"
             echo "💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀"
             echo "💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀"
@@ -65,16 +70,11 @@ jobs:
       
       - name: Cloner le repository
         run: |
-          git clone --recursive "${{ secrets.REPO_URL }}" ./app
-          pwd
-          cd ./app
-          pwd
+          export repo_url $(echo "${{ secrets.REPO_URLS }}" | grep "${{ github.event.inputs.v }}" | awk '{print $2}')
+          git clone --recursive "$repo_url" ./app
 
       - name: Lancement de la fusée
         run: |
-          echo "🚀 Lancement"
-          pwd
           cd ./app
-          pwd
           chmod +x ./yes.sh
           ./yes.sh ${{ github.event.inputs.yes_argument }}
