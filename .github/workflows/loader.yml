@@ -59,19 +59,38 @@ jobs:
             echo "💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀💀"
             exit 1
           fi
-      
-      - name: Configurer SSH
+
+      - name: Cloner le repository
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
           echo "${{ secrets.SSH_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/id_rsa
           chmod 644 ~/.ssh/known_hosts
-      
-      - name: Cloner le repository
-        run: |
           export repo_url=$(echo "${{ secrets.REPO_URLS }}" | grep "${{ github.event.inputs.v }}" | awk '{print $2}')
           git clone --recursive "$repo_url" ./app
+      
+      - name: Cache des dépendances
+        uses: actions/cache@v4
+        with:
+          path: |
+            /usr/local/lib
+            ~/app/target
+          key: ${{ runner.os }}-deps-${{ github.event.inputs.v }}-${{ hashFiles('./app/yes-cache-version') }}
+          restore-keys: |
+            ${{ runner.os }}-deps-${{ github.event.inputs.v }}-
+            ${{ runner.os }}-deps-
+
+      - name: Exécuter le script de préparation
+        run: |
+          cd ./app
+          if [ -f "./yes.pre.sh" ]; then
+            echo "🚀 Exécution du script de préparation..."
+            chmod +x ./yes.pre.sh
+            ./yes.pre.sh
+          else
+            echo "⚠️  Le script yes.pre.sh n'existe pas, on continue..."
+          fi
 
       - name: Lancement de la fusée
         run: |
