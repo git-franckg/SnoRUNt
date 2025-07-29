@@ -70,7 +70,7 @@ jobs:
       
       - name: Cloner le repository
         run: |
-          export repo_url $(echo "${{ secrets.REPO_URLS }}" | grep "${{ github.event.inputs.v }}" | awk '{print $2}')
+          export repo_url=$(echo "${{ secrets.REPO_URLS }}" | grep "${{ github.event.inputs.v }}" | awk '{print $2}')
           git clone --recursive "$repo_url" ./app
 
       - name: Lancement de la fusée
