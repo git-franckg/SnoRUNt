@@ -76,6 +76,7 @@ jobs:
           path: |
             /usr/local/lib
             ~/app/target
+            ~/app/caches
           key: ${{ runner.os }}-deps-${{ github.event.inputs.v }}-${{ hashFiles('./app/yes-cache-version') }}
           restore-keys: |
             ${{ runner.os }}-deps-${{ github.event.inputs.v }}-
